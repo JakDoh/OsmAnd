@@ -1,5 +1,6 @@
 package net.osmand.plus.plugins.externalsensors.dialogs;
 
+import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.AUTH_KEY;
 import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.NAME;
 
 import android.content.Intent;
@@ -259,6 +260,9 @@ public class ExternalDevicesListFragment extends ExternalDevicesBaseFragment imp
 		if (property == NAME) {
 			plugin.changeDeviceName(sensorId, newName);
 			updatePairedSensorsList();
+		}
+		if (property == AUTH_KEY) {
+			plugin.changeAuthKey(sensorId, newName);
 		}
 	}
 

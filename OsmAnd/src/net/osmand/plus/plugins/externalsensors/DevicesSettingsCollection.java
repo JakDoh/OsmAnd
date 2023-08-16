@@ -75,6 +75,8 @@ class DevicesSettingsCollection {
 			case ANT_BICYCLE_SD:
 			case BLE_BICYCLE_SCD:
 				return new WheelDeviceSettings(settings);
+			case BLE_MI_BAND:
+				return new AuthKeyDeviceSettings(settings);
 			default:
 				return new DeviceSettings(settings);
 		}
@@ -85,6 +87,8 @@ class DevicesSettingsCollection {
 			case ANT_BICYCLE_SD:
 			case BLE_BICYCLE_SCD:
 				return new WheelDeviceSettings(deviceId, deviceType, name, deviceEnabled);
+			case BLE_MI_BAND:
+				return new AuthKeyDeviceSettings(deviceId, deviceType, name, deviceEnabled);
 			default:
 				return new DeviceSettings(deviceId, deviceType, name, deviceEnabled);
 		}

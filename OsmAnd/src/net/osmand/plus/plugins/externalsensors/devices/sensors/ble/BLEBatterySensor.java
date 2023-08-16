@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class BLEBatterySensor extends BLEAbstractSensor {
 
-	private BatteryData lastBatteryData;
+	protected BatteryData lastBatteryData;
 
 	public static class BatteryData implements SensorData {
 
@@ -128,8 +128,7 @@ public class BLEBatterySensor extends BLEAbstractSensor {
 			decodeBatteryCharacteristic(gatt, characteristic);
 		}
 	}
-
-	private void decodeBatteryCharacteristic(@NonNull BluetoothGatt gatt,
+	protected void decodeBatteryCharacteristic(@NonNull BluetoothGatt gatt,
 	                                         @NonNull BluetoothGattCharacteristic characteristic) {
 		int batteryLevel = characteristic.getValue()[0];
 		BatteryData data = new BatteryData(System.currentTimeMillis(), batteryLevel);

@@ -11,9 +11,12 @@ import androidx.annotation.Nullable;
 
 import net.osmand.plus.plugins.externalsensors.DeviceType;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.AbstractSensor;
+import net.osmand.plus.plugins.externalsensors.devices.sensors.ble.BLEAbstractSensor;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.SensorData;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.SensorWidgetDataFieldType;
+
+import net.osmand.plus.plugins.externalsensors.devices.sensors.ble.BLEMiBandAuth;
 import net.osmand.util.Algorithms;
 
 import org.json.JSONException;
@@ -35,6 +38,9 @@ public abstract class AbstractDevice<T extends AbstractSensor> {
 	protected List<DeviceListener> listeners = new ArrayList<>();
 	protected List<T> sensors = new ArrayList<>();
 	protected String deviceName;
+
+	protected BLEMiBandAuth auth;
+
 
 	public interface DeviceListener {
 
@@ -85,6 +91,8 @@ public abstract class AbstractDevice<T extends AbstractSensor> {
 	public int getRssi() {
 		return rssi;
 	}
+
+	public boolean isAuthReq() { return true;}//auth != null; }
 
 	public boolean isConnected() {
 		return state == DeviceConnectionState.CONNECTED;

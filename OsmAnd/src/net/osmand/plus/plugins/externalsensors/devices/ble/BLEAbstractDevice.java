@@ -70,6 +70,8 @@ public abstract class BLEAbstractDevice extends AbstractDevice<BLEAbstractSensor
 		BLEAbstractDevice device = null;
 		if (BLEHeartRateDevice.getServiceUUID().equals(uuid)) {
 			device = new BLEHeartRateDevice(bluetoothAdapter, address);
+		} else if (BLEMiBandDevice.getServiceUUID().equals(uuid)) {
+			device = new BLEMiBandDevice(bluetoothAdapter, address);
 		} else if (BLETemperatureDevice.getServiceUUID().equals(uuid)) {
 			device = new BLETemperatureDevice(bluetoothAdapter, address);
 		} else if (BLEBikeSCDDevice.getServiceUUID().equals(uuid)) {
@@ -107,9 +109,21 @@ public abstract class BLEAbstractDevice extends AbstractDevice<BLEAbstractSensor
 		}
 	}
 
+
+	public void setAuthDone(){
+		auth = null;
+	}
+
 	private void fireDeviceDisconnectedEvent() {
 		for (DeviceListener listener : listeners) {
 			listener.onDeviceDisconnect(this);
+		}
+	}
+
+	public void fireSensors(){
+		List<BluetoothGattCharacteristic> characteristics = getCharacteristics();
+		for (BLEAbstractSensor sensor : sensors) {
+			sensor.requestCharacteristic(characteristics);
 		}
 	}
 
@@ -181,8 +195,12 @@ public abstract class BLEAbstractDevice extends AbstractDevice<BLEAbstractSensor
 				LOG.debug(String.format(Locale.US, "discovered %d services for '%s'", services.size(), gatt.getDevice().getName()));
 
 				List<BluetoothGattCharacteristic> characteristics = getCharacteristics();
-				for (BLEAbstractSensor sensor : sensors) {
+				if (auth != null) {
+					auth.requestCharacteristic(characteristics);
+				} else {
+					for (BLEAbstractSensor sensor : sensors) {
 					sensor.requestCharacteristic(characteristics);
+					}
 				}
 				enqueueCommand(() -> {
 					if (!gatt.readRemoteRssi()) {
@@ -204,6 +222,7 @@ public abstract class BLEAbstractDevice extends AbstractDevice<BLEAbstractSensor
 				return;
 			}
 			callbackHandler.post(() -> {
+				if (auth != null ) {auth.onCharacteristicRead(gatt, characteristic, status);}
 				for (BLEAbstractSensor sensor : sensors) {
 					sensor.onCharacteristicRead(gatt, characteristic, status);
 				}
@@ -215,6 +234,7 @@ public abstract class BLEAbstractDevice extends AbstractDevice<BLEAbstractSensor
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 		                                    BluetoothGattCharacteristic characteristic) {
 			callbackHandler.post(() -> {
+				if (auth != null ){ auth.onCharacteristicChanged(gatt, characteristic);}
 				for (BLEAbstractSensor sensor : sensors) {
 					sensor.onCharacteristicChanged(gatt, characteristic);
 				}
@@ -234,6 +254,15 @@ public abstract class BLEAbstractDevice extends AbstractDevice<BLEAbstractSensor
 			super.onDescriptorWrite(gatt, descriptor, status);
 			completedCommand();
 		}
+
+		@Override
+		public void onCharacteristicWrite(BluetoothGatt gatt,
+										  BluetoothGattCharacteristic characteristic,
+										  int status) {
+			super.onCharacteristicWrite(gatt, characteristic, status);
+			completedCommand();
+		}
+
 	};
 
 	@SuppressLint("MissingPermission")
@@ -306,11 +335,25 @@ public abstract class BLEAbstractDevice extends AbstractDevice<BLEAbstractSensor
 		}
 		enqueueCommand(() -> {
 			if (!bluetoothGatt.readCharacteristic(characteristic)) {
-				LOG.error("Device readCharacteristic failed " + getName());
+				LOG.error("Device readCharacteristic : " + characteristic.getUuid() + "  failed on device " + getName() );
 				completedCommand();
 			}
 		});
 	}
+
+	@SuppressLint("MissingPermission")
+	public void writeCharacteristic(@NonNull BluetoothGattCharacteristic characteristic) {
+		if (bluetoothAdapter == null || bluetoothGatt == null) {
+			return;
+		}
+		enqueueCommand(() -> {
+			if (!bluetoothGatt.writeCharacteristic(characteristic)) {
+				LOG.error("Device writeCharacteristic failed " + getName());
+				completedCommand();
+			}
+		});
+	}
+
 
 	@SuppressLint("MissingPermission")
 	public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic,

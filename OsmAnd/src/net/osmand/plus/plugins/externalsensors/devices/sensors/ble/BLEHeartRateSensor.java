@@ -13,6 +13,7 @@ import androidx.annotation.StringRes;
 import net.osmand.plus.R;
 import net.osmand.plus.plugins.externalsensors.GattAttributes;
 import net.osmand.plus.plugins.externalsensors.devices.ble.BLEHeartRateDevice;
+import net.osmand.plus.plugins.externalsensors.devices.ble.BLEMiBandDevice;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.SensorData;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.SensorDataField;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.SensorWidgetDataField;
@@ -105,6 +106,9 @@ public class BLEHeartRateSensor extends BLEAbstractSensor {
 	}
 
 	public BLEHeartRateSensor(@NonNull BLEHeartRateDevice device) {
+		super(device, device.getDeviceId() + "_heart_rate");
+	}
+	public BLEHeartRateSensor(@NonNull BLEMiBandDevice device) {
 		super(device, device.getDeviceId() + "_heart_rate");
 	}
 

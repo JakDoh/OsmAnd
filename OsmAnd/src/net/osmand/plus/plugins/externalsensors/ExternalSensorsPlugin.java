@@ -2,6 +2,7 @@ package net.osmand.plus.plugins.externalsensors;
 
 import static net.osmand.aidlapi.OsmAndCustomizationConstants.DRAWER_ANT_PLUS_ID;
 import static net.osmand.aidlapi.OsmAndCustomizationConstants.PLUGIN_ANT_PLUS;
+import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.AUTH_KEY;
 import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.NAME;
 import static net.osmand.plus.plugins.externalsensors.devices.sensors.SensorWidgetDataFieldType.BIKE_CADENCE;
 import static net.osmand.plus.plugins.externalsensors.devices.sensors.SensorWidgetDataFieldType.BIKE_DISTANCE;
@@ -374,6 +375,34 @@ public class ExternalSensorsPlugin extends OsmandPlugin {
 			devicesHelper.setDeviceProperty(device, DeviceChangeableProperties.NAME, newName);
 		}
 	}
+
+	@NonNull
+	public String getAuthKey(@NonNull AbstractDevice<?> device) {
+		String authKey = devicesHelper.getDeviceProperty(device, AUTH_KEY);
+		return !Algorithms.isEmpty(authKey) ? authKey : device.getName();
+	}
+
+	public void changeAuthKey(@NonNull String deviceId, @NonNull String newAuthKey) {
+		AbstractDevice<?> device = getDevice(deviceId);
+		if (device != null) {
+			devicesHelper.setDeviceProperty(device, DeviceChangeableProperties.AUTH_KEY, newAuthKey);
+		}
+	}
+
+//	@Nullable
+//	public String getAuthKey(@NonNull AbstractDevice<?> device) {
+//		String authKey = devicesHelper.getAuthKey(device);
+//		return authKey != null ? authKey : null;
+//	}
+//
+//	public void changeAuthKey(@NonNull String deviceId, @NonNull String newKey) {
+//		AbstractDevice<?> device = getDevice(deviceId);
+//		if (device != null) {
+//			devicesHelper.setAuthKey(device, newKey);
+//		}
+//	}
+
+
 
 	public CommonPreference<String> getPrefSettingsForWidgetType(@NonNull WriteToGpxWidgetType widgetType) {
 		switch (widgetType) {

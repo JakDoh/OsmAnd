@@ -4598,6 +4598,7 @@ Download tile maps directly, or copy them as SQLite database files to OsmAnd\'s 
     <string name="favorite_places_category">Places</string>
     <string name="shared_string_others">Others</string>
     <string name="shared_string_name">Name</string>
+    <string name="auth_key_string">Authentication key</string>
     <string name="favourites_edit_dialog_category">Category</string>
     <string name="shared_string_no_thanks">No, thanks</string>
     <string name="basemap_missing">Download the base world map to get an overview covering the whole world at low zoom levels.</string>

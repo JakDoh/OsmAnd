@@ -49,10 +49,13 @@ import net.osmand.plus.plugins.externalsensors.devices.ble.BLEBikeSCDDevice;
 import net.osmand.plus.plugins.externalsensors.devices.ble.BLEHeartRateDevice;
 import net.osmand.plus.plugins.externalsensors.devices.ble.BLERunningSCDDevice;
 import net.osmand.plus.plugins.externalsensors.devices.ble.BLETemperatureDevice;
+import net.osmand.plus.plugins.externalsensors.devices.ble.BLEMiBandDevice;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.AbstractSensor;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties;
 
 import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.NAME;
+import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.WHEEL_CIRCUMFERENCE;
+import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.AUTH_KEY;
 
 import net.osmand.plus.plugins.externalsensors.devices.sensors.SensorData;
 import net.osmand.plus.plugins.externalsensors.devices.sensors.SensorDataField;
@@ -73,7 +76,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static net.osmand.plus.plugins.externalsensors.devices.sensors.DeviceChangeableProperties.WHEEL_CIRCUMFERENCE;
 import static net.osmand.plus.settings.enums.MetricsConstants.*;
 
 public class DevicesHelper implements DeviceListener, DevicePreferencesListener {
@@ -84,6 +86,7 @@ public class DevicesHelper implements DeviceListener, DevicePreferencesListener 
 
 	private final static List<UUID> SUPPORTED_BLE_SERVICE_UUIDS = Arrays.asList(
 			BLEBikeSCDDevice.getServiceUUID(),
+			BLEMiBandDevice.getServiceUUID(),
 			BLEHeartRateDevice.getServiceUUID(),
 			BLERunningSCDDevice.getServiceUUID(),
 			BLETemperatureDevice.getServiceUUID());
@@ -197,6 +200,8 @@ public class DevicesHelper implements DeviceListener, DevicePreferencesListener 
 				return bluetoothAdapter != null ? new BLEBikeSCDDevice(bluetoothAdapter, deviceId) : null;
 			case BLE_RUNNING_SCDS:
 				return bluetoothAdapter != null ? new BLERunningSCDDevice(bluetoothAdapter, deviceId) : null;
+			case BLE_MI_BAND:
+				return bluetoothAdapter != null ? new BLEMiBandDevice(bluetoothAdapter, deviceId) : null;
 			default:
 				return null;
 		}
